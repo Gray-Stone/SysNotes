@@ -17,7 +17,7 @@ An [article from Arch Linux](https://wiki.archlinux.org/title/Systemd/User) abou
 Put the unit file under `{HOME}/.config/systemd/user` and `systemctl --user daemon-reload` would be able to detect it. 
 Use `systemctl --user` to control a user unit, which is similar to a normal unit but run under current user. 
 
-Normally this unit will only run when user is logged in. But can also stay on using `loginctl enable-linger`
+Normally this unit will only run when user is logged in. But can also stay on using `loginctl enable-linger`. Can use the loginctl status `loginctl user-status` to check
 
 Simplest unit:
 
@@ -57,3 +57,23 @@ The `Accept=yes` option seems to affect a huge difference on executable use-case
 man page https://www.man7.org/linux/man-pages/man5/systemd.socket.5.html
 
 Passing of the socket have two mode (within `Accept=yes`). Pass down the fd of the socket, program need to use `sd_listen_fds()` to check for it. Or use `inetd` style where stdin and stdout is used. 
+
+
+
+
+## Work with other scripts (like bash):
+
+#### Detect a unit
+To check if a systemd unit exists:
+```
+if ! systemctl cat ${UNIT_I_WANT} >/dev/null 2>&1; then
+	echo "Unit ${UNIT_I_WANT} doesn't exists
+else
+	echo "Unit ${UNIT_I_WANT} exists
+fi
+```
+
+#### Override
+
+Unit can have override files that add/replace entries to the system file. `${path_to_unit_file}.d/override.conf` Is the override file. Needs do daemon-reload after making this file.
+
