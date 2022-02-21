@@ -59,7 +59,62 @@ man page https://www.man7.org/linux/man-pages/man5/systemd.socket.5.html
 Passing of the socket have two mode (within `Accept=yes`). Pass down the fd of the socket, program need to use `sd_listen_fds()` to check for it. Or use `inetd` style where stdin and stdout is used. 
 
 
+## Stop your unit in expected way
 
+Man page:
+https://www.freedesktop.org/software/systemd/man/systemd.kill.html#
+
+
+`KillMode=` decide how systemd track the processes within a unit. 
+* `KillMode=control-group` will track and send signal to all process within the unit. 
+* `KillMode=mixed` will send terminate signal to main process, and subsequent kill signal is sent to all remaining process. 
+* `KillMode=process` only kill the main process (not recommended)
+* `killMode=none` No process is killed (strongly not recommended)
+
+You can also use `ExitType` to tell systemd how to consider when a unit is terminated (by main process or all process must finish). This is available at version 250 (not on ubuntu20)
+
+When stopping a unit, by default there are two steps.:
+quote from man page
+> Processes will first be terminated via SIGTERM (unless the signal to send is changed via KillSignal= or RestartKillSignal=). Optionally, this is immediately followed by a SIGHUP (if enabled with SendSIGHUP=). If processes still remain after the main process of a unit has exited or the delay configured via the TimeoutStopSec= has passed, the termination request is repeated with the SIGKILL signal or the signal specified via FinalKillSignal= (unless this is disabled via the SendSIGKILL= option). 
+
+Use `killSignal=` to set the signal used on first step. and `FinalKillSignal=` to set the second signal to use. 
+
+`SendSIGKILL=` is the on-off switch for the second stopping signal. It takes a boolean value and default to yes. When turned off, the unit will not restart until tracked process has actually died.
+
+`RestartKillSignal=` let you set a different signal from the one specified in `killSignal` when unit restarts.
+
+`TimeoutStopSec=` will set the time between `SIGTERM` and `SIGKILL` when `ExecStop=` is not set. When `ExecStop=` is set, this is also the timeout for running each `ExecStop=` command
+
+`TimeoutAbortSec=` generally used to give a unit more time to write to core file after terminate. for detail [see man page](https://www.freedesktop.org/software/systemd/man/systemd.service.html#TimeoutAbortSec=)
+
+`TimeoutSec=` is a shorthand for configuring both `TimeoutStartSec=` and `TimeoutStopSec=` to the specified value.  
+
+Example for setting terminate signal for a user unit that usually expect sigint.
+```
+[Service]
+KillMode=control-group
+killSignal=SIGINT
+FinalKillSignal=SIGKILL
+TimeoutStopSec=10
+```
+---
+
+
+## Some useful settings:
+
+To turn off log limit (doesn't work in 1804):
+```
+LogRateLimitIntervalSec=0
+LogRateLimitBurst=0
+```
+
+Make a quick user unit and run command like you would in terminal:
+```
+[Service]
+ExecStart=/bin/zsh -c "source ~/.zshrc ; sleep 2 ; ${USE_MY_TERMINAL} "
+```
+
+---
 
 ## Work with other scripts (like bash):
 
