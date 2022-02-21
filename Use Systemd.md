@@ -54,9 +54,20 @@ Let systemd create the socket and listen to it. Only turn on the actual executab
 
 The `Accept=yes` option seems to affect a huge difference on executable use-case. Should be chosen carefully. 
 
+A note from the (accept manual entry)[https://www.freedesktop.org/software/systemd/man/systemd.socket.html#Accept=]
+>For IPv4 and IPv6 connections, the REMOTE_ADDR environment variable will contain the remote IP address, and REMOTE_PORT will contain the remote port. This is the same as the format used by CGI. For SOCK_RAW, the port is the IP protocol.
+
 man page https://www.man7.org/linux/man-pages/man5/systemd.socket.5.html
 
 Passing of the socket have two mode (within `Accept=yes`). Pass down the fd of the socket, program need to use `sd_listen_fds()` to check for it. Or use `inetd` style where stdin and stdout is used. 
+
+### C++ executable as the socket unit's target
+
+These steps are needed for using `sd_listen_fds()` to check how many sockets are passed, and use `SD_LISTEN_FDS_START` to know the starting file descriptor:
+
+`#include <systemd/sd-daemon.h>` this library is needed, which is installed from `sudo apt install libsystemd-dev`. In addition, in CMakeList, `target_link_libraries( ${TARGET} -lsystemd` this `-lsystemd` item is needed for linker to find the library. 
+
+However, when running in `Accept=yes` mode, these are not necessary. You will always only get 1 file descriptor. Also the `SD_LISTEN_FDS_START` is actually hard coded to 3 `#define SD_LISTEN_FDS_START 3`. This mean if you know what you are doing. you can skip all these and just use file descriptor 3.  
 
 
 ## Stop your unit in expected way
