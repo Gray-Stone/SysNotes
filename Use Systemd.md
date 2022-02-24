@@ -110,6 +110,15 @@ TimeoutStopSec=10
 ```
 ---
 
+## Transient unit
+
+https://www.linux.org/docs/man1/systemd-run.html
+
+use systemd-run to run something as if it's a systemd unit 
+
+TODO figure out how to use it. 
+
+--- 
 
 ## Some useful settings:
 
