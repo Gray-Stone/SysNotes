@@ -108,15 +108,6 @@ killSignal=SIGINT
 FinalKillSignal=SIGKILL
 TimeoutStopSec=10
 ```
----
-
-## Transient unit
-
-https://www.linux.org/docs/man1/systemd-run.html
-
-use systemd-run to run something as if it's a systemd unit 
-
-TODO figure out how to use it. 
 
 --- 
 
@@ -151,4 +142,29 @@ fi
 #### Override
 
 Unit can have override files that add/replace entries to the system file. `${path_to_unit_file}.d/override.conf` Is the override file. Needs do daemon-reload after making this file.
+
+
+---
+
+# Transient unit
+
+https://www.commandlinux.com/man-page/man1/systemd-run.1.html
+
+`systemd-run` is the way to quickly run a command as a systemd unit without setting up the unit file. The command will be put into a systemd transient unit to run.
+
+The transient unit will have a random name if not assigned, and will disappear after it is finished (not auto complete-able from systemctl command)
+
+The following script can help handle this, also launched `journalctl` on this unit to make it as just running a normal command. 
+
+``` bash
+NC=$'\e[0m' ; RED=$'\e[0;31m' ; GREEN=$'\e[0;32m'
+
+function sys-run () {
+  set -xv
+  echo "$RED running $GREEN $1 $RED with $GREEN ${@:2} $NC"
+  UNIT_NAME="$1_$(date +%b%d_%H:%M:%S)"
+  systemd-run --user --unit "${UNIT_NAME}"  --remain-after-exit    /bin/zsh -c " source ~/.zshrc ; ${*} "
+  journalctl --user -fu ${UNIT_NAME}
+}
+```
 
