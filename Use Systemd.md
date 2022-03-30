@@ -69,6 +69,49 @@ These steps are needed for using `sd_listen_fds()` to check how many sockets are
 
 However, when running in `Accept=yes` mode, these are not necessary. You will always only get 1 file descriptor. Also the `SD_LISTEN_FDS_START` is actually hard coded to 3 `#define SD_LISTEN_FDS_START 3`. This mean if you know what you are doing. you can skip all these and just use file descriptor 3.  
 
+### Wrapper for the actual socket unit executable.
+
+The executable within socket unit's template unit could actually have wrappers (like shell scripts)
+
+The file descriptor will simply kept working when the executable is run as a sub-process (I need to look into why)
+
+In this wrapper script you can do many things including put on tshark. However, for filtering to work nicely, we might also want all the address info.
+
+The `REMOTE_ADDR` and `REMOTE_PORT` is defined. However there are nothing for local address info, you have to fetch it from file descriptor
+
+If the wrapper is a shell script and Python3 is installed. Then a quick inline python trick could be used. 
+
+``` bash 
+#! /usr/bin/bash
+python_find_local(){
+python3 <<EOF
+import socket
+local_addr , local_port , *_ = socket.socket(fileno=3).getsockname()
+print(f"""
+LOCAL_ADDR={local_addr}
+LOCAL_PORT={local_port}
+""")
+EOF
+}
+
+eval $(python_find_local)
+
+echo "local addr is ${LOCAL_ADDR}"
+echo "local port is ${LOCAL_PORT}"
+
+# Then call your exec file 
+```
+
+### Instance name %i
+
+In a systemd template unit, the %i will be expended to the template name (which is between the `@` and `.service` part.)
+
+However, when you use `systemctl` or `journalctl` this unit show up as `xxx@<num>-<local.addr>-<remote.addr>`, but the %i is only a number. (this might change for different version)
+
+This mean the shell script in the templated unit can't call journalctl get its own log.
+
+The work-around is to do `journalctl -u "xxx_unit@${INSTANCE}-${LOCAL_ADDR}:${LOCAL_PORT}-${REMOTE_ADDR}:${REMOTE_PORT}"` where `${INSTANCE}` is the %i passed in as command line arg 
+
 
 ## Stop your unit in expected way
 
