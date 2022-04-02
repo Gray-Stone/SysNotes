@@ -186,6 +186,12 @@ fi
 
 Unit can have override files that add/replace entries to the system file. `${path_to_unit_file}.d/override.conf` Is the override file. Needs do daemon-reload after making this file.
 
+`systemctl edit <unit_name>` will create the correct folder, file and open the editor pointing to these files for you. (it can even edit multiple units at the same time). Using this command, adding override content becomes much easier. To use this command in a script that auto inject override contents requires some special trick: 
+
+```
+echo -e "overriding content you want" | sudo SYSTEMD_EDITOR=tee systemctl edit <your_unit> <other_unit_can_be_edited_together>
+```
+
 
 ---
 
