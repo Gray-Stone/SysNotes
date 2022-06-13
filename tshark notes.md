@@ -129,6 +129,34 @@ tshark -i eno2 -Tfields -e ip.src -e udp.port
 tshark -r file -Tfields -e frame.time_epoch
 ```
 
+# editcap
+
+
+https://www.wireshark.org/docs/man-pages/editcap.html
+
+editcap is a software to edit/alter the content in a capture file. 
+
+Could use it to chop out a section of capture (time based, packet number based), change the format, reduce duplication, etc. 
+
+## Usages:
+
+### Limit the time range:
+
+Generate a new pcapng file within the given time. 
+
+```
+editcap -A ${START_TIME} -B ${END_TIME} ${IN_FILE} ${OUT_FILE}
+```
+
+The time format suppose to be ISO 8601. (however it doesn't seems to understand sub-second stuff)
+
+**The manual said it supports the epoch time stamp. However on ubutnu20.04, epoch doesn't seed to be reconized.** A workaround could be using `date` command to help conver it. 
+
+```
+editcap -A $( date -d @${START_EPOCH} +"%Y-%m-%d%H:%M:%S.%N") -B $( date -d @${END_EPOCH} +"%Y-%m-%d%H:%M:%S.%N")  ${IN_FILE} ${OUT_FILE}
+```
+
+
 --------------
 --------------
 
