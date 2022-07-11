@@ -192,6 +192,8 @@ Unit can have override files that add/replace entries to the system file. `${pat
 echo -e "overriding content you want" | sudo SYSTEMD_EDITOR=tee systemctl edit <your_unit> <other_unit_can_be_edited_together>
 ```
 
+`tee -a` also work if you only want to append to existing overload file
+
 
 ---
 
