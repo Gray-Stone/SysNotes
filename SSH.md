@@ -106,3 +106,27 @@ One solution for this is simply not check the remote's key. However this is dang
 --- 
 
 The general solution to both of the above problem is to either login to root user, test out the connection. Or run the systemd unit as a existing user.
+
+===
+
+### Example systemd unit using autossh
+
+```
+[Unit]
+Description=Reverse tunnel onto server, using autossh
+
+After=network-online.target
+
+[Service]
+User=my-user
+# -i /home/my-user/.ssh/id_rsa is skipped and username not specified because this unit is run as my user.
+# This is to work around the issue where root doesn't have a known host and can't allow/verify remote host's key
+ExecStart=/usr/bin/autossh -M 55555 -N -v -R localhost:12345:localhost:22 remote-user@134.122.25.9 
+[Install]
+
+# This line is copied from ssh.service (the server)
+WantedBy=multi-user.target
+```
+
+In the above example, autossh is used, it's totally possible to use ssh, only the `-M` option will be invalid. 
+I used the trick to run the user as `my-user` to doge the problem of identity file and authentication.
