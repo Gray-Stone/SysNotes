@@ -203,3 +203,21 @@ for line in text_block.split("\n"):
 		print(f"Interface {interface} is not usable!, with ip {ip}")
 EOF
 ```
+
+# Dry-run / Try the Interface name. 
+
+There are often needs to "vet" the user argument when installing a capturing script into a systemd unit or bake it into something else. 
+
+tcpdump doesn't come with such feature. However we can achieve the same by actually running it and kill it right after. tcpdump reutrn 0 if killed by signINT, return 1 if error occurred. 
+
+```
+    (tcpdump -i $INTERFACE_NAME & pid=$! ; sleep 0.1 ; kill -s INT "$pid" ; wait $pid)
+```
+Of course, this bit need to be run as root. (a common issue happened before was tcpdump is run with sudo, but kill is not, thus unable to kill the process)
+
+
+A simpler option is to use `timeout` command 
+
+```
+timeout --foreground --preserve-status --signal=INT 0.1s tcpdump -i "${INTERFACE_NAME}"
+```
