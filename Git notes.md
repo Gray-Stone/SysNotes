@@ -78,3 +78,10 @@ One of the most powerful yet slightly dangerous command.
 Besure to know about `git reflog` before you use the rebase. That could safe you from messing up your rebase as lossing commits.
 
 One feature that's very useful about rebase is the `rebase --onto`. This allow you to take any segment of commits, move it out and apply it onto any other commit 
+
+
+## Cache credential.
+
+https://stackoverflow.com/questions/5343068/is-there-a-way-to-cache-https-credentials-for-pushing-commits
+
+To save creds to file: `git config --global credential.helper store`
