@@ -22,6 +22,10 @@ is the src and dst doesn't have the trailing slash, the outcome will be putting 
 
 ## Pulling data over internet 
 
+
+[Online link explaining rsync resume after interrupted](https://unix.stackexchange.com/questions/48298/can-rsync-resume-after-being-interrupted)
+
+
 ```
 rsync --stats --compress --partial --append-verify --progress -vhr --dry-run
 ```
