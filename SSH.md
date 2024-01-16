@@ -130,3 +130,12 @@ WantedBy=multi-user.target
 
 In the above example, autossh is used, it's totally possible to use ssh, only the `-M` option will be invalid. 
 I used the trick to run the user as `my-user` to doge the problem of identity file and authentication.
+
+## X11 xauth when using sudo 
+
+
+https://unix.stackexchange.com/questions/110558/su-with-error-x11-connection-rejected-because-of-wrong-authentication/118295#118295
+
+```
+standarduser@localhost:~$ sudo xauth add $(xauth list | grep "unix$(echo $DISPLAY | cut -c10-12)")
+```
