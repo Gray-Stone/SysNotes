@@ -62,6 +62,33 @@ EOF
 ++ echo '```'
 ```
 
+
+## Colorful
+
+Saw somewhere using this trick 
+```
+BOLD=$(tput bold)
+NORM=$(tput sgr0)
+
+# and later print 
+
+${BOLD}-p ~/custom_ws${NORM}
+```
+
+
+
+## Finding the script file itself 
+
+```
+here="$(dirname $(realpath $0))"
+```
+This will make $here the location of current file. Very useful when trying to include/source other files relative from this file
+
+
+--- 
+
+---
+
 # Python in Bash
 
 YES! write Python inside bash, not the other way around.
