@@ -19,6 +19,8 @@ rsync -v -c --delete -r  src/ dst/
 
 is the src and dst doesn't have the trailing slash, the outcome will be putting src into dst. Adding slash means process the content of the folder, not treating folder as a single entity.
 
+> -s, --protect-args          no space-splitting; wildcard chars only
+This is a very good flag for when target destination on remote machine is super strange with spaces and non ascii characters. 
 
 ## Pulling data over internet 
 
