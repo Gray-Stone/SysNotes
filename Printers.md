@@ -25,4 +25,15 @@ For example with arch, this list only contains `sys root wheel`. Which means the
 
 ## Brother printer 
 
-brother printer would need some additional drivers. [brlaser](https://github.com/pdewacht/brlaser) is a good one to go with, available on many pcakges. 
+brother printer would need some additional drivers. [brlaser](https://github.com/pdewacht/brlaser) is a good one to go with, available on many pcakges.
+
+
+
+## Network sharing. 
+
+### Server side (where printer is)
+
+Server side is the machine that already have access to printer (like usb connection)
+
+according to 
+https://wiki.archlinux.org/title/CUPS/Printer_sharing
