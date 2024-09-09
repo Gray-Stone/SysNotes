@@ -19,8 +19,19 @@ rsync -v -c --delete -r  src/ dst/
 
 is the src and dst doesn't have the trailing slash, the outcome will be putting src into dst. Adding slash means process the content of the folder, not treating folder as a single entity.
 
+
+## Special file names.
+
+For file names with lots of special characters, while-space, or wild cards, we need to ensure parsing the contents until at the remote machine. A pair of single quote to prevent argument resolving and the -s will usually do it.
+
 > -s, --protect-args          no space-splitting; wildcard chars only
 This is a very good flag for when target destination on remote machine is super strange with spaces and non ascii characters. 
+
+example 
+
+```
+╰─➤  rsync --stats --compress --partial --append-verify --progress --human-readable -vr -s --dry-run remote-deviec:'/mnt/files/[abc] special character with white space[s]' ./
+```
 
 ## Pulling data over internet 
 
@@ -29,7 +40,7 @@ This is a very good flag for when target destination on remote machine is super 
 
 
 ```
-rsync --stats --compress --partial --append-verify --progress -vhr --dry-run
+rsync --stats --compress --partial --append-verify --progress --human-readable -vr --dry-run
 ```
 
 * give some file-transfer stats
