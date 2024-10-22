@@ -111,3 +111,25 @@ https://github.com/winapps-org/winapps/blob/main/docs/libvirt.md#creating-a-wind
 note: 
 * Under step 13 of the above linked section, the line `<source mode='bind'/>` is removed by virt-manager as soon as added and applyed. Will just ignore this small difference for now.
 
+## Move Libvirt KVM to another machine
+
+
+To dump the XML: 
+```sh
+virsh dumpxml VMNAME > domxml.xml 
+```
+
+Then also copy over the virtual machine's drive.
+
+To load the xml into a new machine 
+```sh
+virsh define domxml.xml
+```
+
+## Compress image file of VM
+
+
+Use `virt-sparsify` to do so. (require using SUDO for compressing image belong to libvirt vm)
+
+https://man.archlinux.org/man/virt-sparsify.1.en
+
