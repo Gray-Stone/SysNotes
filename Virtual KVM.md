@@ -133,3 +133,7 @@ Use `virt-sparsify` to do so. (require using SUDO for compressing image belong t
 
 https://man.archlinux.org/man/virt-sparsify.1.en
 
+
+## External Network access
+
+When directly letting VM exposed and accessing external network, use `macvtap` will work. Need to specify the ethernet jack. Also, host is still able to use the same network port as well.
