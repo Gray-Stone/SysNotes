@@ -72,4 +72,3 @@ Generally it's common to use large dataset size for Large file dataset, like Med
 
 [OpenZFS guide](https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Workload%20Tuning.html#bit-torrent) also suggest Bit Torrent to use 16KB recordsize, as it does lots of 16KB write. It's best to move the finished download data to a new location so the data gets a rewrite and becomes sequential and compact after words. New location could also be a dataset with different settings.
 
-
