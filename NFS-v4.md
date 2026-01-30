@@ -35,6 +35,33 @@ https://gist.github.com/fardjad/ea358f9bf844889ecad109b352dd0d5b
 
 Client side `sync` and Server side `sync` setting are not the same settings.
 
+https://avidandrew.com/understanding-nfs-caching.html
+
+> The NFS client treats the sync mount option differently than some other file systems (refer to mount(8) for a description of the generic sync and async mount options). If neither sync nor async is specified (or if the async option is specified), the NFS client delays sending application writes to the server until any of these events occur: 
+
+According to nfs(5) manual, the async is defualt, and actually sync is enfored on specific call of f_sync or certain buffer condition meet.
+
+There is also [this post](https://discuss.kde.org/t/help-needed-with-nfs-shares-in-dolphin/12909/10) about KDE being freezing with normal async NFS, but changed after setting to SYNC 
+
+## Client Side 
+
+Client side setting should refer to this: 
+
+https://linux.die.net/man/5/nfs
+
+## Server side 
+
+Server side settings are likely under exports manual 
+
+https://linux.die.net/man/5/exports
+
+
 ## Opther option to be careful about 
 
 * `wdelay`: The NFS server will delay writing to the disk if it suspects another write request is imminent. This can improve performance as it reduces the number of times the disk must be accessed by separate write commands, thereby reducing write overhead. To disable this, specify the no_wdelay. no_wdelay is only available if the default sync option is also specified.
+
+## crossmnt
+
+This is a very important option, specially on simple self use NFS exports. 
+
+This option makes a folder's all subfolder be mountable by client, so no need to specifcially export sub directories, and client don't have to only mount the one exported. 

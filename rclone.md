@@ -48,3 +48,17 @@ for example
 ```
 rclone copy --progress 媒体 onedrive-back2:/媒体 --dry-run
 ```
+
+## User by script user 
+
+Rclone store the config under current user, so when script changed user, or is root, it won't find the config file. 
+
+https://forum.rclone.org/t/trying-to-make-rclone-conf-available-to-all-users-on-linux/42267
+
+The solution is to move the config to a public location and give rclone arguments on where to look for.
+
+`RCLONE_CONFIG=/rclone/rclone.conf` 
+
+`--config=/rclone/rclone.conf` 
+
+Note: for onedrive (or maybe others as well) rclone will try to update onedrive, so the config file itself need to be writable. so linking might not be a option, might have to move it to `/opt/rclone/rclone.conf`
