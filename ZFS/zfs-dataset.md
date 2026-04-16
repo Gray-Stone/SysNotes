@@ -11,9 +11,11 @@ Each large section under pool should be made as dataset.
 from [This Post](https://serverfault.com/questions/1143267/what-zfs-pool-vdev-and-dataset-properties-should-most-people-use)
 
 * `xattr=sa` This is a linux specific option. not default on for compatibility [ZFS-commit-note](https://github.com/openzfs/zfs/commit/82a37189aac955c81a59a5ecc3400475adb56355)
-* `dnodesize=auto` Paired with `xattr=sa`
-* `relatime=on` save operation on read only action by less accurate atime, already common on other disk format. (or turn atime off if don’t care).
-* `compression=xxx` Compression have almost no draw back, only benefit. So turn it on.
+  * `xattr=sa`, stores extended attributes in inodes, reduce disk IO when extended attribute is used. After some version `xattr=on` is the same as `sa` 
+* `dnodesize=auto` Paired with `xattr=sa` , auto adjust d node size.
+* `relatime=on` save operation on read only action by less accurate atime, already common on other disk format. 
+* `atime=off`, this make the above one irrelevant. Simply not saving atime saves a lot more writes.
+* `compression=xxx` Compression have almost no draw back, only benefit. So turn it on, `lz4` is good default
 * `recordsize=xxx` The default value is a good middle group. but on very specific type of dataset like Large media only case, tuning this could have some benefits.
 
 ### Options shouldn't use
